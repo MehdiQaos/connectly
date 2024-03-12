@@ -12,4 +12,10 @@ public interface MemberService {
     List<Member> getMembers();
 
     Optional<Member> findById(Long id);
+
+    Optional<Member> findByEmail(String email);
+
+    Optional<Member> findByFirstNameAndLastName(String firstName, String lastName);
+
+    Member save(MemberRequestDto memberRequestDto);
 }

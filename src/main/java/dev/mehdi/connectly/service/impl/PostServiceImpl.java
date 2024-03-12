@@ -11,6 +11,7 @@ import dev.mehdi.connectly.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -36,5 +37,15 @@ public class PostServiceImpl implements PostService {
                 () -> new ResourceNotFoundException("member not found")
         );
         return postRepository.findAllByMember(member);
+    }
+
+    @Override
+    public List<Post> getPostsByFollowings(Long memberId) {
+        Member member = memberService.findById(memberId).orElseThrow(
+                () -> new ResourceNotFoundException("member not found")
+        );
+        return member.getFollowings().stream()
+                .flatMap(following -> following.getFollowing().getPosts().stream())
+                .toList();
     }
 }

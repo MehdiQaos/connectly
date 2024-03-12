@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,8 +17,8 @@ public class MemberLoader implements CommandLineRunner {
     private final MemberService memberService;
 
     private final List<MemberRequestDto> memberRequestDtos = List.of(
-            new MemberRequestDto("El Mehdi", "Qaos", "m@q.com", "123456", true, 1L),
-            new MemberRequestDto("Mohammed", "Qaos", "q@m.com", "123456", true, 1L)
+            new MemberRequestDto("El Mehdi", "Qaos", "m@q.com", "123456", LocalDate.of(1990, 1, 24), true, 1L),
+            new MemberRequestDto("Mohammed", "Qaos", "q@m.com", "123456", LocalDate.of(1990, 1, 24),  true, 1L)
     );
 
     @Override

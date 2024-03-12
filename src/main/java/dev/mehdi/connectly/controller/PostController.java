@@ -26,10 +26,22 @@ public class PostController {
         return new ResponseEntity<>(postResponseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/member/{memberId}")
     public ResponseEntity<List<PostResponseDto>> getPostsByMemberId(@PathVariable Long memberId) {
         List<PostResponseDto> posts = postService.getPostsByMemberId(memberId)
                 .stream().map(postMapper::toDto).toList();
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("followings/{memberId}")
+    public ResponseEntity<List<PostResponseDto>> getPostsByFollowings(@PathVariable Long memberId) {
+        List<PostResponseDto> posts = postService.getPostsByFollowings(memberId)
+                .stream().map(postMapper::toDto).toList();
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "mehdi";
     }
 }

@@ -2,17 +2,20 @@ package dev.mehdi.connectly.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 @Getter @Setter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "member")
-public class Member {
+public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -29,6 +32,10 @@ public class Member {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
 
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
@@ -73,6 +80,39 @@ public class Member {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "conversations_id"))
     private Set<Conversation> conversations = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private final List<Token> tokens = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName().name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 
 //  TODO: Add hashcode and equals methods
 }
