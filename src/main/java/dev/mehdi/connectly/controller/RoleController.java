@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.controller;
 
+import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.model.Role;
 import dev.mehdi.connectly.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class RoleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRole(@PathVariable Long id) {
-        return ResponseEntity.ok(roleService.findById(id).orElseThrow());
+        return ResponseEntity.ok(roleService.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Role not found")
+        ));
     }
 }

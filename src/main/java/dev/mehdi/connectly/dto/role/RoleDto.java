@@ -1,4 +1,4 @@
-package dev.mehdi.connectly.dto.member.role;
+package dev.mehdi.connectly.dto.role;
 
 import lombok.*;
 

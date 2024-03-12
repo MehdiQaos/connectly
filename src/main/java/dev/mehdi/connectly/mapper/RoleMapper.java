@@ -1,6 +1,6 @@
 package dev.mehdi.connectly.mapper;
 
-import dev.mehdi.connectly.dto.member.role.RoleDto;
+import dev.mehdi.connectly.dto.role.RoleDto;
 import dev.mehdi.connectly.model.Role;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

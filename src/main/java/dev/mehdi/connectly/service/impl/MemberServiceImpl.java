@@ -1,6 +1,7 @@
 package dev.mehdi.connectly.service.impl;
 
 import dev.mehdi.connectly.dto.member.MemberRequestDto;
+import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Role;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,9 @@ public class MemberServiceImpl implements MemberService {
             return;
         }
         Member newMember = memberMapper.toMember(memberRequestDto);
-        Role role = roleService.findById(memberRequestDto.getRoleId()).orElseThrow();
+        Role role = roleService.findById(memberRequestDto.getRoleId()).orElseThrow(
+                () -> new ResourceNotFoundException("Role not found")
+        );
         newMember.setRole(role);
         memberRepository.save(newMember);
     }

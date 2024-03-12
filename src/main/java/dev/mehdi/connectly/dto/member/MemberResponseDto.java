@@ -1,6 +1,6 @@
 package dev.mehdi.connectly.dto.member;
 
-import dev.mehdi.connectly.dto.member.role.RoleDto;
+import dev.mehdi.connectly.dto.role.RoleDto;
 import lombok.*;
 
 @AllArgsConstructor

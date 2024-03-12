@@ -23,6 +23,9 @@ public class Post {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;

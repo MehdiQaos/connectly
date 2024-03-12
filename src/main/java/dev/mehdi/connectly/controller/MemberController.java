@@ -1,6 +1,7 @@
 package dev.mehdi.connectly.controller;
 
 import dev.mehdi.connectly.dto.member.MemberResponseDto;
+import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
 import dev.mehdi.connectly.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,9 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long id) {
         MemberResponseDto member = memberService.findById(id)
                 .map(memberMapper::toMemberResponseDto)
-                .orElseThrow();
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Member not found")
+                );
         return ResponseEntity.ok(member);
     }
 
