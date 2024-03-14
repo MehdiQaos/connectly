@@ -2,6 +2,7 @@ package dev.mehdi.connectly.mapper;
 
 import dev.mehdi.connectly.dto.member.MemberRequestDto;
 import dev.mehdi.connectly.dto.member.MemberResponseDto;
+import dev.mehdi.connectly.dto.member.SimpleMember;
 import dev.mehdi.connectly.model.Member;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -19,4 +20,6 @@ public interface MemberMapper {
 
     @Mapping(target = "roleDto", source = "role")
     MemberResponseDto toMemberResponseDto(Member member);
+
+    SimpleMember toSimpleMember(Member member);
 }

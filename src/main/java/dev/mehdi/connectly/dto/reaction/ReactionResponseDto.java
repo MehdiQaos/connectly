@@ -1,6 +1,7 @@
 package dev.mehdi.connectly.dto.reaction;
 
 import dev.mehdi.connectly.dto.member.MemberResponseDto;
+import dev.mehdi.connectly.dto.member.SimpleMember;
 import dev.mehdi.connectly.model.enums.ReactionType;
 import lombok.*;
 
@@ -12,5 +13,5 @@ public class ReactionResponseDto {
 
     private ReactionType type;
 
-    private MemberResponseDto member;
+    private SimpleMember member;
 }

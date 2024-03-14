@@ -1,6 +1,6 @@
 package dev.mehdi.connectly.controller;
 
-import dev.mehdi.connectly.dto.member.MemberResponseDto;
+import dev.mehdi.connectly.dto.member.SimpleMember;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
 import dev.mehdi.connectly.service.MemberService;
@@ -21,29 +21,18 @@ public class MemberController {
     private final MemberMapper memberMapper;
 
     @GetMapping
-    public ResponseEntity<List<MemberResponseDto>> getMembers() {
-        List<MemberResponseDto> dtoList = memberService.getMembers()
-                .stream().map(memberMapper::toMemberResponseDto).toList();
+    public ResponseEntity<List<SimpleMember>> getMembers() {
+        List<SimpleMember> dtoList = memberService.getMembers()
+                .stream().map(memberMapper::toSimpleMember).toList();
         return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long id) {
-        MemberResponseDto member = memberService.findById(id)
-                .map(memberMapper::toMemberResponseDto)
+    public ResponseEntity<SimpleMember> getMember(@PathVariable Long id) {
+        SimpleMember member = memberService.findById(id).map(memberMapper::toSimpleMember)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Member not found")
                 );
         return ResponseEntity.ok(member);
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        return "Hello Mehdi Qaos";
-    }
-
-    @GetMapping("/name/{name}")
-    public String name(@PathVariable String name) {
-        return "Hello " + name;
     }
 }

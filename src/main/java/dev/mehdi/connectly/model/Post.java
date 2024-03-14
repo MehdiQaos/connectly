@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "post")
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

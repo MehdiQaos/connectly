@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "reaction")
-public class Reaction {
+public class Reaction extends BaseEntity {
 //    TODO: use embedded id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

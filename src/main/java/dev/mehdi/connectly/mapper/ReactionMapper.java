@@ -17,7 +17,7 @@ import java.util.Set;
 public interface ReactionMapper {
     ReactionResponseDto toDto(Reaction reaction);
 
-    default List<ReactionResponseDto> toDto(Set<Reaction> reactions) {
+    default List<ReactionResponseDto> toDtoList(Set<Reaction> reactions) {
         return reactions.stream().map(this::toDto).toList();
     }
 }

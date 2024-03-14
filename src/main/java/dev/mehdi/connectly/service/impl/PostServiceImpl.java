@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +48,10 @@ public class PostServiceImpl implements PostService {
         return member.getFollowings().stream()
                 .flatMap(following -> following.getFollowing().getPosts().stream())
                 .toList();
+    }
+
+    @Override
+    public Optional<Post> findById(Long postId) {
+        return postRepository.findById(postId);
     }
 }
