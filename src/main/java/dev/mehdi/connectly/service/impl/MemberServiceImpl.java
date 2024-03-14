@@ -46,6 +46,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<Member> findAllById(List<Long> ids) {
+        return memberRepository.findAllById(ids);
+    }
+
+    @Override
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmailIgnoreCase(email);
     }

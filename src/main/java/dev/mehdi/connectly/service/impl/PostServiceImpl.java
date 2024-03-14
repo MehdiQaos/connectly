@@ -11,7 +11,6 @@ import dev.mehdi.connectly.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +45,7 @@ public class PostServiceImpl implements PostService {
                 () -> new ResourceNotFoundException("member not found")
         );
         return member.getFollowings().stream()
-                .flatMap(following -> following.getFollowing().getPosts().stream())
+                .flatMap(following -> following.getPosts().stream())
                 .toList();
     }
 

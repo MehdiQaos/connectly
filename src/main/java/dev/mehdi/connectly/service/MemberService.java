@@ -13,6 +13,8 @@ public interface MemberService {
 
     Optional<Member> findById(Long id);
 
+    List<Member> findAllById(List<Long> ids);
+
     Optional<Member> findByEmail(String email);
 
     Optional<Member> findByFirstNameAndLastName(String firstName, String lastName);

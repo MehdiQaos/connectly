@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.*;
 
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -44,19 +46,32 @@ public class Member extends BaseEntity implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToMany(
-            mappedBy = "follower",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+    @ManyToMany
+    @JoinTable(
+            name = "follow",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
     )
-    private final Set<Follow> followings = new LinkedHashSet<>();
+    private final Set<Member> followings = new LinkedHashSet<>();
 
-    @OneToMany(
-            mappedBy = "following",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+    //    @ManyToMany(mappedBy = "followings")
+    @ManyToMany
+    @JoinTable(
+            name = "follow",
+            joinColumns = @JoinColumn(name = "following_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private final Set<Follow> followers = new LinkedHashSet<>();
+    private final Set<Member> followers = new LinkedHashSet<>();
+
+    public void follow(Member member) {
+        followings.add(member);
+//        member.followers.add(this);
+    }
+
+    public void unfollow(Member member) {
+        followings.remove(member);
+//        member.followers.remove(this);
+    }
 
     @OneToMany(
             mappedBy = "member",
@@ -114,5 +129,18 @@ public class Member extends BaseEntity implements UserDetails {
         return enabled;
     }
 
-//  TODO: Add hashcode and equals methods
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Member member = (Member) obj;
+        return Objects.equals(id, member.id);
+    }
 }
