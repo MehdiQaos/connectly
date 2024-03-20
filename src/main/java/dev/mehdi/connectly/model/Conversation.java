@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -24,9 +25,25 @@ public class Conversation extends BaseEntity {
     private String content;
 
     @ManyToMany(mappedBy = "conversations")
+    @Builder.Default
     private Set<Member> members = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private Set<Message> messages = new LinkedHashSet<>();
-//  TODO: Add hashcode and equals methods
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Conversation conversation = (Conversation) obj;
+        return Objects.equals(id, conversation.id);
+    }
 }

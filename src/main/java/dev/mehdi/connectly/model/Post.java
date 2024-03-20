@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter @Setter @Builder
@@ -16,6 +17,9 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    @Column(name = "image_location")
+    private String imageLocation;
 
     @Lob
     @Column(name = "content", nullable = false)
@@ -31,6 +35,21 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Comment> comments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private final Set<Reaction> reactions = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.EAGER)
+    private final Set<Member> likedMembers = new LinkedHashSet<>();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Post post = (Post) obj;
+        return Objects.equals(id, post.id);
+    }
 }

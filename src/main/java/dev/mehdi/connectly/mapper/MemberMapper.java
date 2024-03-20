@@ -1,8 +1,9 @@
 package dev.mehdi.connectly.mapper;
 
 import dev.mehdi.connectly.dto.member.MemberRequestDto;
+import dev.mehdi.connectly.dto.member.FullMemberDto;
 import dev.mehdi.connectly.dto.member.MemberResponseDto;
-import dev.mehdi.connectly.dto.member.SimpleMember;
+import dev.mehdi.connectly.dto.member.ProfileDto;
 import dev.mehdi.connectly.model.Member;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -16,10 +17,19 @@ import org.mapstruct.MappingConstants;
 )
 public interface MemberMapper {
 
-    Member toMember(MemberRequestDto memberRequestDto);
+    Member requestToMember(MemberRequestDto memberRequestDto);
 
     @Mapping(target = "roleDto", source = "role")
-    MemberResponseDto toMemberResponseDto(Member member);
+    FullMemberDto toFullDto(Member member);
 
-    SimpleMember toSimpleMember(Member member);
+    MemberResponseDto toDto(Member member);
+
+    @Mapping(target = "numberOfFollowers", expression = "java(member.getFollowers().size())")
+    @Mapping(target = "numberOfFollowings", expression = "java(member.getFollowings().size())")
+    @Mapping(target = "numberOfPosts", expression = "java(member.getPosts().size())")
+    @Mapping(target = "numberOfLikes", expression = "java(member.getLikedPosts().size())")
+    @Mapping(target = "numberOfComments", expression = "java(member.getComments().size())")
+    ProfileDto toProfileDto(Member member);
+
+//    Member editProfileToMember(ProfileDto profileDto, Member member);
 }

@@ -1,6 +1,6 @@
 package dev.mehdi.connectly.dto.comment;
 
-import dev.mehdi.connectly.dto.member.SimpleMember;
+import dev.mehdi.connectly.dto.member.MemberResponseDto;
 import lombok.*;
 
 @AllArgsConstructor
@@ -11,7 +11,7 @@ public class CommentResponseDto {
 
     private String content;
 
-    private SimpleMember member;
+    private MemberResponseDto member;
 
     private Long postId;
 }

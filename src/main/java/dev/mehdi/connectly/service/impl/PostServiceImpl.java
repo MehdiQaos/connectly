@@ -5,6 +5,7 @@ import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.PostMapper;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Post;
+import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.repository.PostRepository;
 import dev.mehdi.connectly.service.MemberService;
 import dev.mehdi.connectly.service.PostService;
@@ -20,12 +21,11 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Override
     public Post createPost(PostRequestDto postRequestDto) {
-        Member member = memberService.findById(postRequestDto.getMemberId()).orElseThrow(
-                () -> new ResourceNotFoundException("member not found")
-        );
+        Member member = findMemberOrThrow(postRequestDto.getMemberId());
         Post newPost = postMapper.toPost(postRequestDto);
         newPost.setMember(member);
         return postRepository.save(newPost);
@@ -33,24 +33,58 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPostsByMemberId(Long memberId) {
-        Member member = memberService.findById(memberId).orElseThrow(
-                () -> new ResourceNotFoundException("member not found")
-        );
+        Member member = findMemberOrThrow(memberId);
         return postRepository.findAllByMember(member);
     }
 
     @Override
     public List<Post> getPostsByFollowings(Long memberId) {
-        Member member = memberService.findById(memberId).orElseThrow(
-                () -> new ResourceNotFoundException("member not found")
-        );
+        Member member = findMemberOrThrow(memberId);
         return member.getFollowings().stream()
                 .flatMap(following -> following.getPosts().stream())
                 .toList();
+//        return member.getFollowings().stream()
+//                .flatMap(following -> following.getPosts().stream())
+//                .map(post -> {
+//                    PostResponseDto dto = postMapper.toDto(post);
+//                    dto.setLiked(post.getLikedMembers().contains(member));
+//                    return dto;
+//                })
+//                .toList();
     }
 
     @Override
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
+    }
+
+    @Override
+    public void likePost(Long memberId, Long postId) {
+        Member member = findMemberOrThrow(memberId);
+        Post post = findPostOrThrow(postId);
+        member.addLikedPost(post);
+        System.out.println("Liking post " + postId + " by member " + memberId);
+        memberRepository.save(member);
+//        postRepository.save(post);
+    }
+
+    @Override
+    public void unlikePost(Long memberId, Long postId) {
+        Member member = findMemberOrThrow(memberId);
+        Post post = findPostOrThrow(postId);
+        member.removeLikedPost(post);
+        postRepository.save(post);
+    }
+
+    private Member findMemberOrThrow(Long memberId) {
+        return memberService.findById(memberId).orElseThrow(
+                () -> new ResourceNotFoundException("member not found")
+        );
+    }
+
+    private Post findPostOrThrow(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> new ResourceNotFoundException("post not found")
+        );
     }
 }

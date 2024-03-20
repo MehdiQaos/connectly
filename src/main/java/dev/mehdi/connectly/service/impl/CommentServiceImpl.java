@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
                 () -> new ResourceNotFoundException("Post not found")
         );
         Comment comment = Comment.builder()
-                .member(member).post(post).build();
+                .content(dto.getContent()).member(member).post(post).build();
         return commentRepository.save(comment);
     }
 

@@ -42,11 +42,23 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
 
+    @Column(name = "profile_picture_location")
+    private String profilePictureLocation;
+
+    @Column(name = "bio", columnDefinition = "LONGTEXT")
+    private String bio;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "profession")
+    private String profession;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "follow",
             joinColumns = @JoinColumn(name = "follower_id"),
@@ -85,15 +97,35 @@ public class Member extends BaseEntity implements UserDetails {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Builder.Default
     private Set<Comment> comments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "member", orphanRemoval = true)
-    private Set<Reaction> reactions = new LinkedHashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "like_post",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    @Builder.Default
+    private Set<Post> likedPosts = new LinkedHashSet<>();
+
+    public void addLikedPost(Post post) {
+        likedPosts.add(post);
+        post.getLikedMembers().add(this);
+    }
+
+    public void removeLikedPost(Post post) {
+        likedPosts.remove(post);
+        post.getLikedMembers().remove(this);
+    }
 
     @ManyToMany
-    @JoinTable(name = "Member_conversations",
+    @JoinTable(
+            name = "Member_conversations",
             joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "conversations_id"))
+            inverseJoinColumns = @JoinColumn(name = "conversations_id")
+    )
+    @Builder.Default
     private Set<Conversation> conversations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)

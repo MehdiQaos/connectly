@@ -3,6 +3,8 @@ package dev.mehdi.connectly.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
@@ -27,4 +29,19 @@ public class Comment extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Comment comment = (Comment) obj;
+        return Objects.equals(id, comment.id);
+    }
 }

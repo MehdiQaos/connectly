@@ -2,6 +2,7 @@ package dev.mehdi.connectly.controller;
 
 import dev.mehdi.connectly.dto.post.PostResponseDto;
 import dev.mehdi.connectly.dto.post.PostRequestDto;
+import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.PostMapper;
 import dev.mehdi.connectly.model.Post;
 import dev.mehdi.connectly.service.PostService;
@@ -33,6 +34,13 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long postId) {
+        Post post = postService.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        return ResponseEntity.ok(postMapper.toDto(post));
+    }
+
     @GetMapping("followings/{memberId}")
     public ResponseEntity<List<PostResponseDto>> getPostsByFollowings(@PathVariable Long memberId) {
         List<PostResponseDto> posts = postService.getPostsByFollowings(memberId)
@@ -40,8 +48,13 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "mehdi";
+    @PostMapping("/{memberId}/like/{postId}")
+    public void likePost(@PathVariable Long memberId, @PathVariable Long postId) {
+        postService.likePost(memberId, postId);
+    }
+
+    @PostMapping("/{memberId}/unlike/{postId}")
+    public void unlikePost(@PathVariable Long memberId, @PathVariable Long postId) {
+        postService.unlikePost(memberId, postId);
     }
 }

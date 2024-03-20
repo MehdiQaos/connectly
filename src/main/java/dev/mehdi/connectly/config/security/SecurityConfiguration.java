@@ -40,8 +40,8 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(
                 authorizeRequests -> authorizeRequests
                     .requestMatchers("api/auth/**").permitAll()
-//                    .anyRequest().authenticated()
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
+//                    .anyRequest().permitAll()
             )
             .sessionManagement(
                 s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

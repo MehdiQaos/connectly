@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -32,4 +33,19 @@ public class Message extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "conversation_id", nullable = false)
     private Conversation conversation;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Message message = (Message) obj;
+        return Objects.equals(id, message.id);
+    }
 }
