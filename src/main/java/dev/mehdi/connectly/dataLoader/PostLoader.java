@@ -45,7 +45,7 @@ public class PostLoader implements CommandLineRunner {
     public void run(String... args) {
         Arrays.stream(postsContent).forEach(content -> {
             long randomIndex = random.nextLong(1, 4);
-            PostRequestDto postRequestDto = new PostRequestDto(content, true, randomIndex);
+            PostRequestDto postRequestDto = new PostRequestDto(content, randomIndex);
             postService.createPost(postRequestDto);
         });
     }

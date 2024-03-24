@@ -5,8 +5,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder @Getter @Setter
-public class PostRequestDto {
-    private String content;
+public class NewPostDto {
+    String content;
 
-    private Long memberId;
 }

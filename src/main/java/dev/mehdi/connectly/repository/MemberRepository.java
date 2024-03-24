@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -22,4 +23,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByFirstNameAndLastNameAndIdNot(String firstName, String lastName, Long id);
     boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.firstName LIKE %:query% OR
+                  m.lastName LIKE %:query% OR
+                  m.email LIKE %:query%
+           """
+    )
+    List<Member> searchByNameOrEmail(String query);
 }

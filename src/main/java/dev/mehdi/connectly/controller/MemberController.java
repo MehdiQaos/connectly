@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/members")
@@ -107,6 +108,19 @@ public class MemberController {
         Member updatedMember = memberService.updatePassword(oldPassword, newPassword, id);
         MemberResponseDto responseDto = memberMapper.toDto(updatedMember);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/{id}/picture")
+    public ResponseEntity<MemberResponseDto> uploadProfilePicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        Member member = memberService.updateProfilePicture(id, file);
+        return ResponseEntity.ok(memberMapper.toDto(member));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MemberResponseDto>> search(@RequestParam(required = false, defaultValue = "") String query) {
+        List<MemberResponseDto> dtoList = memberService.search(query)
+                .stream().map(memberMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
     }
 
 //    @PostMapping("/{id}/profile-picture")

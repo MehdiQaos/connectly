@@ -40,6 +40,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(
                 authorizeRequests -> authorizeRequests
                     .requestMatchers("api/auth/**").permitAll()
+                    .requestMatchers("api/storage/**").permitAll()
                     .anyRequest().authenticated()
 //                    .anyRequest().permitAll()
             )

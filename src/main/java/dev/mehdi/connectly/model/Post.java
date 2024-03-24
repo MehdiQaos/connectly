@@ -7,7 +7,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,12 +23,8 @@ public class Post extends BaseEntity {
     @Column(name = "image_location")
     private String imageLocation;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "MEDIUMTEXT")
     private String content;
-
-    @Column(name = "is_public", nullable = false)
-    private Boolean isPublic;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "member_id", nullable = false)

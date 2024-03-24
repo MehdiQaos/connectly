@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,11 @@ public class MemberServiceImpl implements MemberService {
         );
         member.setRole(userRole);
         member.setEnabled(true);
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member save(Member member) {
         return memberRepository.save(member);
     }
 
@@ -154,6 +160,20 @@ public class MemberServiceImpl implements MemberService {
         member.setPassword(passwordEncoder.encode(newPassword));
         memberRepository.save(member);
         return member;
+    }
+
+    @Override
+    public Member updateProfilePicture(Long id, MultipartFile file) {
+        Member member = findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
+        Long pictureId = fileStorageService.save(file);
+        member.setProfilePictureLocation(String.valueOf(pictureId));
+        return save(member);
+    }
+
+    @Override
+    public List<Member> search(String query) {
+        return memberRepository.searchByNameOrEmail(query);
     }
 
     @Override

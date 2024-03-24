@@ -23,6 +23,8 @@ public interface MemberService {
 
     Member save(MemberRequestDto memberRequestDto);
 
+    Member save(Member member);
+
     void follow(Long followerId, Long followedId);
 
     Member updateEmail(Long id, String email);
@@ -42,6 +44,10 @@ public interface MemberService {
     Member update(Long id, EditProfileDto dto);
 
     Member updatePassword(String oldPassword, String newPassword, Long id);
+
+    Member updateProfilePicture(Long id, MultipartFile file);
+
+    List<Member> search(String query);
 
 //    String storeProfilePicture(Long id, MultipartFile file);
 

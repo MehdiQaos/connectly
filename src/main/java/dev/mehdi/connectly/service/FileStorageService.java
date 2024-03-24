@@ -4,7 +4,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageService {
-    String store(MultipartFile file);
+    Long save(MultipartFile file);
 
-    Resource load(String filename);
+    byte[] loadPicture(Long id);
+
+//    String store(MultipartFile file);
+
+//    Resource load(String filename);
 }
