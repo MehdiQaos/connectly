@@ -6,10 +6,13 @@ import dev.mehdi.connectly.exception.InvalidRequestException;
 import dev.mehdi.connectly.exception.ResourceExistException;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
+import dev.mehdi.connectly.model.Event;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Role;
+import dev.mehdi.connectly.model.enums.EventType;
 import dev.mehdi.connectly.model.enums.MemberRole;
 import dev.mehdi.connectly.repository.MemberRepository;
+import dev.mehdi.connectly.service.EventService;
 import dev.mehdi.connectly.service.MemberService;
 import dev.mehdi.connectly.service.RoleService;
 import dev.mehdi.connectly.service.FileStorageService;
@@ -28,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final RoleService roleService;
     private final FileStorageService fileStorageService;
+    private final EventService eventService;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final MemberMapper memberMapper;
 
@@ -96,15 +100,31 @@ public class MemberServiceImpl implements MemberService {
             throw InvalidRequestException.of("follow", "You can't follow yourself");
         }
         Follow follow = findFollowMembers(followerId, followedId);
+        if (follow.follower.getFollowings().contains(follow.following)) {
+            return;
+        }
         follow.follower.follow(follow.following);
+        Event newEvent = new Event(null, EventType.FOLLOW, null, null, follow.follower, follow.following);
+        follow.following.addEvent(newEvent);
         memberRepository.save(follow.follower);
+//        memberRepository.save(follow.following);
+//        eventService.save(newEvent);
     }
 
     @Override
     public void unfollow(Long followerId, Long followedId) {
         Follow follow = findFollowMembers(followerId, followedId);
         follow.follower.unfollow(follow.following);
+        System.out.println("size: " + follow.following.getNewEvents().size());
+        follow.following.getNewEvents().forEach(event -> {
+            if (event.getInitiatingMember().equals(follow.follower) && event.getEventType().equals(EventType.FOLLOW)) {
+                follow.following.getNewEvents().remove(event);
+                eventService.delete(event);
+            }
+        });
+        System.out.println("size: " + follow.following.getNewEvents().size());
         memberRepository.save(follow.follower);
+//        memberRepository.save(follow.following);
     }
 
     @Override

@@ -75,6 +75,24 @@ public class Member extends BaseEntity implements UserDetails {
     )
     private final Set<Member> followers = new LinkedHashSet<>();
 
+    @OneToMany(
+            mappedBy = "affectedMember",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    private Set<Event> newEvents = new LinkedHashSet<>();
+
+    public void addEvent(Event event) {
+        newEvents.add(event);
+        event.setAffectedMember(this);
+    }
+
+    public void removeEvent(Event event) {
+        newEvents.remove(event);
+        event.setAffectedMember(null);
+    }
+
     public void follow(Member member) {
         followings.add(member);
 //        member.followers.add(this);

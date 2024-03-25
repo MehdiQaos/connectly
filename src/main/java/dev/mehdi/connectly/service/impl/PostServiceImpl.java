@@ -3,10 +3,13 @@ package dev.mehdi.connectly.service.impl;
 import dev.mehdi.connectly.dto.post.PostRequestDto;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.PostMapper;
+import dev.mehdi.connectly.model.Event;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Post;
+import dev.mehdi.connectly.model.enums.EventType;
 import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.repository.PostRepository;
+import dev.mehdi.connectly.service.EventService;
 import dev.mehdi.connectly.service.FileStorageService;
 import dev.mehdi.connectly.service.MemberService;
 import dev.mehdi.connectly.service.PostService;
@@ -27,6 +30,7 @@ public class PostServiceImpl implements PostService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final FileStorageService fileStorageService;
+    private final EventService eventService;
 
     @Override
     public Post createPost(PostRequestDto postRequestDto) {
@@ -68,7 +72,8 @@ public class PostServiceImpl implements PostService {
         Member member = findMemberOrThrow(memberId);
         Post post = findPostOrThrow(postId);
         member.addLikedPost(post);
-        System.out.println("Liking post " + postId + " by member " + memberId);
+        Event newEvent = new Event(null, EventType.LIKE,post , null, member, post.getMember());
+        post.getMember().addEvent(newEvent);
         memberRepository.save(member);
 //        postRepository.save(post);
     }
@@ -77,6 +82,10 @@ public class PostServiceImpl implements PostService {
     public void unlikePost(Long memberId, Long postId) {
         Member member = findMemberOrThrow(memberId);
         Post post = findPostOrThrow(postId);
+        eventService.findLikeEvent(member, post).ifPresentOrElse(
+                event -> post.getMember().removeEvent(event),
+                () -> {}
+        );
         member.removeLikedPost(post);
         postRepository.save(post);
     }
