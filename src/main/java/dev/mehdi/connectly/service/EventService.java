@@ -5,6 +5,7 @@ import dev.mehdi.connectly.model.Event;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Post;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EventService {
@@ -15,4 +16,8 @@ public interface EventService {
     Optional<Event> findByComment(Comment comment);
 
     Optional<Event> findLikeEvent(Member member, Post post);
+
+    List<Event> getMemberEvents(Long memberId);
+
+    void deleteById(Long eventId);
 }
