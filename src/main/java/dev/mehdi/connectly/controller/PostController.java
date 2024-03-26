@@ -73,6 +73,12 @@ public class PostController {
         return ResponseEntity.ok(postMapper.toDto(post));
     }
 
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Boolean> deletePost(@PathVariable Long postId) {
+        postService.deleteById(postId);
+        return ResponseEntity.ok(true);
+    }
+
 //    @GetMapping("/search")
 //    public ResponseEntity<Page<PostResponseDto>> searchWithPagination(
 //            @RequestParam(required = false, defaultValue = "") String query,

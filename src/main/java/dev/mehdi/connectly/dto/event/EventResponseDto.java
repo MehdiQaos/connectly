@@ -6,6 +6,8 @@ import dev.mehdi.connectly.dto.post.PostResponseDto;
 import dev.mehdi.connectly.model.enums.EventType;
 import lombok.*;
 
+import java.time.Instant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder @Getter @Setter
@@ -14,11 +16,13 @@ public class EventResponseDto {
 
     private EventType eventType;
 
-    private PostResponseDto post;
+    private Long postId;
 
     private CommentResponseDto comment;
 
     private MemberResponseDto initiatingMember;
 
     private MemberResponseDto affectedMember;
+
+    private Instant time;
 }

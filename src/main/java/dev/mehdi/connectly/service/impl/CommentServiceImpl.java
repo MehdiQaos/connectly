@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = Comment.builder()
                 .content(dto.getContent()).member(member).post(post).build();
         if (!member.equals(post.getMember())) {
-            Event newEvent = new Event(null, EventType.COMMENT, null, comment, member, post.getMember());
+            Event newEvent = new Event(null, EventType.COMMENT, post, comment, member, post.getMember());
             post.getMember().addEvent(newEvent);
         }
         return commentRepository.save(comment);
@@ -54,10 +54,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
-        eventService.findByComment(comment).ifPresentOrElse(
-                eventService::delete,
-                () -> {}
-        );
+        eventService.findByComment(comment).ifPresent(eventService::delete);
         commentRepository.delete(comment);
     }
 }

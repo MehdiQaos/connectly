@@ -9,7 +9,7 @@ import lombok.*;
 @Getter @Setter @Builder
 @Entity
 @Table(name = "event")
-public class Event {
+public class Event extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

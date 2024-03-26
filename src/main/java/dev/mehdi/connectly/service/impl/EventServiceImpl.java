@@ -5,7 +5,6 @@ import dev.mehdi.connectly.model.Comment;
 import dev.mehdi.connectly.model.Event;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Post;
-import dev.mehdi.connectly.model.enums.EventType;
 import dev.mehdi.connectly.repository.EventRepository;
 import dev.mehdi.connectly.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +25,18 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void delete(Event event) {
+        event.getAffectedMember().removeEvent(event);
         eventRepository.delete(event);
     }
 
     @Override
     public Optional<Event> findByComment(Comment comment) {
         return eventRepository.findByComment(comment);
+    }
+
+    @Override
+    public List<Event> findAllByCommentId(Long commentId) {
+        return eventRepository.findAllByCommentId(commentId);
     }
 
     @Override

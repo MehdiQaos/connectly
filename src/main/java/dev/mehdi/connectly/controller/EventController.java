@@ -21,31 +21,15 @@ public class EventController {
     private final MemberService memberService;
     private final EventMapper eventMapper;
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/member/{memberId}")
     public ResponseEntity<List<EventResponseDto>> getMemberEvents(@PathVariable Long memberId) {
-        Member member = memberService.findById(memberId)
+        List<EventResponseDto> eventsDto = memberService.findById(memberId)
+                .map(Member::getNewEvents)
+                .map(events1 -> events1.stream().map(eventMapper::toDto).toList())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Member not found")
                 );
-        List<Event> events = member.getNewEvents().stream().toList();
-        List<EventResponseDto> eventsDto = events.stream().map(eventMapper::toDto).toList();
-//        List<EventResponseDto> events = memberService.findById(memberId)
-//                .map(Member::getNewEvents)
-//                .map(events1 -> events1.stream().map(eventMapper::toDto).toList())
-//                .orElseThrow(
-//                        () -> new ResourceNotFoundException("Member not found")
-//                );
         return ResponseEntity.ok(eventsDto);
-    }
-
-    @GetMapping("/piq/{memberId}")
-    public ResponseEntity<Integer> getPiq(@PathVariable Long memberId) {
-        Member member = memberService.findById(memberId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Member not found")
-                );
-        List<Event> events = member.getNewEvents().stream().toList();
-        return ResponseEntity.ok(events.size());
     }
 
     @DeleteMapping("/{eventId}")

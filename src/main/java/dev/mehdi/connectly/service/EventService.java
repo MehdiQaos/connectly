@@ -15,6 +15,8 @@ public interface EventService {
 
     Optional<Event> findByComment(Comment comment);
 
+    List<Event> findAllByCommentId(Long commentId);
+
     Optional<Event> findLikeEvent(Member member, Post post);
 
     List<Event> getMemberEvents(Long memberId);

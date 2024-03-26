@@ -7,18 +7,18 @@ import dev.mehdi.connectly.model.Event;
 import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Post;
 import dev.mehdi.connectly.model.enums.EventType;
+import dev.mehdi.connectly.repository.CommentRepository;
 import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.repository.PostRepository;
-import dev.mehdi.connectly.service.EventService;
-import dev.mehdi.connectly.service.FileStorageService;
-import dev.mehdi.connectly.service.MemberService;
-import dev.mehdi.connectly.service.PostService;
+import dev.mehdi.connectly.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final MemberRepository memberRepository;
     private final FileStorageService fileStorageService;
     private final EventService eventService;
+    private final CommentRepository commentRepository;
 
     @Override
     public Post createPost(PostRequestDto postRequestDto) {
@@ -72,6 +73,12 @@ public class PostServiceImpl implements PostService {
         Member member = findMemberOrThrow(memberId);
         Post post = findPostOrThrow(postId);
         member.addLikedPost(post);
+        if (
+                eventService.findLikeEvent(member, post).isPresent() ||
+                member.equals(post.getMember())
+        ) {
+            return;
+        }
         Event newEvent = new Event(null, EventType.LIKE,post , null, member, post.getMember());
         post.getMember().addEvent(newEvent);
         memberRepository.save(member);
@@ -111,6 +118,21 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> search(String query) {
         return postRepository.findAllByContentContaining(query);
+    }
+
+    @Override
+    public void deleteById(Long postId) {
+        Post post = findPostOrThrow(postId);
+        post.getMember().getPosts().remove(post);
+        List<Member> likedMembers = new ArrayList<>(post.getLikedMembers());
+        for (Member member : likedMembers) {
+            member.removeLikedPost(post);
+        }
+        post.getComments().forEach((comment) -> {
+            eventService.findByComment(comment).ifPresent(eventService::delete);
+            commentRepository.delete(comment);
+        });
+        postRepository.delete(post);
     }
 
     private Member findMemberOrThrow(Long memberId) {

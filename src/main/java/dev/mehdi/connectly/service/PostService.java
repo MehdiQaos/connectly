@@ -27,4 +27,6 @@ public interface PostService {
     Page<Post> searchWithPagination(String query, Pageable pageable);
 
     List<Post> search(String query);
+
+    void deleteById(Long postId);
 }
