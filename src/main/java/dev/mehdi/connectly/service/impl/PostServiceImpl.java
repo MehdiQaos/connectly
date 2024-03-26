@@ -123,6 +123,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deleteById(Long postId) {
         Post post = findPostOrThrow(postId);
+        if (post.getImageLocation() != null) {
+            fileStorageService.deletePicture(Long.parseLong(post.getImageLocation()));
+        }
         post.getMember().getPosts().remove(post);
         List<Member> likedMembers = new ArrayList<>(post.getLikedMembers());
         for (Member member : likedMembers) {

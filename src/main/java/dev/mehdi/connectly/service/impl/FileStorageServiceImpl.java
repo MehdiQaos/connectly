@@ -1,21 +1,13 @@
 package dev.mehdi.connectly.service.impl;
 
-import dev.mehdi.connectly.exception.ResourceNotFoundException;
-import dev.mehdi.connectly.model.Member;
 import dev.mehdi.connectly.model.Picture;
 import dev.mehdi.connectly.repository.PictureRepository;
 import dev.mehdi.connectly.service.FileStorageService;
-import dev.mehdi.connectly.service.MemberService;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,6 +35,11 @@ public class FileStorageServiceImpl implements FileStorageService {
         Picture picture = pictureRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Picture not found"));
         return picture.getData();
+    }
+
+    @Override
+    public void deletePicture(Long id) {
+        pictureRepository.deleteById(id);
     }
 
 //    @Override
