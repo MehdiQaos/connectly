@@ -1,7 +1,8 @@
 package dev.mehdi.connectly.controller;
 
+import dev.mehdi.connectly.dto.role.RoleDto;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
-import dev.mehdi.connectly.model.Role;
+import dev.mehdi.connectly.mapper.RoleMapper;
 import dev.mehdi.connectly.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +18,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;
+    private final RoleMapper roleMapper;
 
     @GetMapping
-    public ResponseEntity<List<Role>> getRoles() {
-        return ResponseEntity.ok(roleService.getRoles());
+    public ResponseEntity<List<RoleDto>> getRoles() {
+        List<RoleDto> roles = roleService.getRoles().stream()
+                .map(roleMapper::toRoleDto).toList();
+        return ResponseEntity.ok(roles);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getRole(@PathVariable Long id) {
-        return ResponseEntity.ok(roleService.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Role not found")
-        ));
+    public ResponseEntity<RoleDto> getRole(@PathVariable Long id) {
+        return roleService.findById(id)
+                .map(roleMapper::toRoleDto)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
     }
 }

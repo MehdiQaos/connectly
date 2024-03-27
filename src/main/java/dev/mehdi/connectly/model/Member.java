@@ -83,6 +83,14 @@ public class Member extends BaseEntity implements UserDetails {
     )
     private Set<Event> newEvents = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "reportingMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Report> reports = new LinkedHashSet<>();
+
+    public void removeReport(Report report) {
+        reports.remove(report);
+        report.setReportingMember(null);
+    }
+
     public void addEvent(Event event) {
         newEvents.add(event);
         event.setAffectedMember(this);
@@ -136,15 +144,6 @@ public class Member extends BaseEntity implements UserDetails {
         likedPosts.remove(post);
         post.getLikedMembers().remove(this);
     }
-
-    @ManyToMany
-    @JoinTable(
-            name = "Member_conversations",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "conversations_id")
-    )
-    @Builder.Default
-    private Set<Conversation> conversations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
     private final List<Token> tokens = new ArrayList<>();

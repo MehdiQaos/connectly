@@ -36,6 +36,14 @@ public class Post extends BaseEntity {
     @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.EAGER)
     private final Set<Member> likedMembers = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "reportedPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Report> reports = new LinkedHashSet<>();
+
+    public void removeReport(Report report) {
+        reports.remove(report);
+        report.setReportedPost(null);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

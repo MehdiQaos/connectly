@@ -117,9 +117,9 @@ public class MemberController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<MemberResponseDto>> search(@RequestParam(required = false, defaultValue = "") String query) {
-        List<MemberResponseDto> dtoList = memberService.search(query)
-                .stream().map(memberMapper::toDto).toList();
+    public ResponseEntity<List<ProfileDto>> search(@RequestParam(required = false, defaultValue = "") String query) {
+        List<ProfileDto> dtoList = memberService.search(query)
+                .stream().map(memberMapper::toProfileDto).toList();
         return ResponseEntity.ok(dtoList);
     }
 

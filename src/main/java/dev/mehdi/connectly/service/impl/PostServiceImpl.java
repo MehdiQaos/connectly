@@ -12,7 +12,6 @@ import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.repository.PostRepository;
 import dev.mehdi.connectly.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getPostsByMemberId(Long memberId) {
         Member member = findMemberOrThrow(memberId);
-        return postRepository.findAllByMember(member);
+        return postRepository.findAllByMemberOrderByCreatedAtDesc(member);
     }
 
     @Override
@@ -75,11 +74,11 @@ public class PostServiceImpl implements PostService {
         member.addLikedPost(post);
         if (
                 eventService.findLikeEvent(member, post).isPresent() ||
-                member.equals(post.getMember())
+                        member.equals(post.getMember())
         ) {
             return;
         }
-        Event newEvent = new Event(null, EventType.LIKE,post , null, member, post.getMember());
+        Event newEvent = new Event(null, EventType.LIKE, post, null, member, post.getMember());
         post.getMember().addEvent(newEvent);
         memberRepository.save(member);
 //        postRepository.save(post);
@@ -91,7 +90,8 @@ public class PostServiceImpl implements PostService {
         Post post = findPostOrThrow(postId);
         eventService.findLikeEvent(member, post).ifPresentOrElse(
                 event -> post.getMember().removeEvent(event),
-                () -> {}
+                () -> {
+                }
         );
         member.removeLikedPost(post);
         postRepository.save(post);
@@ -131,11 +131,33 @@ public class PostServiceImpl implements PostService {
         for (Member member : likedMembers) {
             member.removeLikedPost(post);
         }
+        post.getReports().forEach(report -> {
+            report.getReportedPost().removeReport(report);
+            report.getReportingMember().removeReport(report);
+        });
         post.getComments().forEach((comment) -> {
             eventService.findByComment(comment).ifPresent(eventService::delete);
             commentRepository.delete(comment);
         });
         postRepository.delete(post);
+    }
+
+    @Override
+    public List<Post> getTimeline(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
+        List<Member> followings = new ArrayList<>(member.getFollowings());
+        followings.add(member);
+        return postRepository.findByMemberInOrderByCreatedAtDesc(followings);
+    }
+
+    @Override
+    public List<Post> getSuggestions(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
+        List<Member> followings = new ArrayList<>(member.getFollowings());
+        followings.add(member);
+        return postRepository.findByMemberNotInOrderByCreatedAtDesc(followings);
     }
 
     private Member findMemberOrThrow(Long memberId) {

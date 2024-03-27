@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,8 @@ public interface PostService {
     List<Post> search(String query);
 
     void deleteById(Long postId);
+
+    List<Post> getTimeline(Long memberId);
+
+    List<Post> getSuggestions(Long memberId);
 }

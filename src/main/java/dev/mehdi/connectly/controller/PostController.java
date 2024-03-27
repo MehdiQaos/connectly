@@ -53,6 +53,20 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("timeline/{memberId}")
+    public ResponseEntity<List<PostResponseDto>> getTimeline(@PathVariable Long memberId) {
+        List<PostResponseDto> posts = postService.getTimeline(memberId)
+                .stream().map(postMapper::toDto).toList();
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("suggestions/{memberId}")
+    public ResponseEntity<List<PostResponseDto>> getSuggestions(@PathVariable Long memberId) {
+        List<PostResponseDto> posts = postService.getSuggestions(memberId)
+                .stream().map(postMapper::toDto).toList();
+        return ResponseEntity.ok(posts);
+    }
+
     @PostMapping("/{memberId}/like/{postId}")
     public void likePost(@PathVariable Long memberId, @PathVariable Long postId) {
         postService.likePost(memberId, postId);
