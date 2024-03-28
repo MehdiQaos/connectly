@@ -12,8 +12,6 @@ import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.repository.PostRepository;
 import dev.mehdi.connectly.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +26,7 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private final FileStorageService fileStorageService;
+    private final PictureService pictureService;
     private final EventService eventService;
     private final CommentRepository commentRepository;
 
@@ -103,16 +101,11 @@ public class PostServiceImpl implements PostService {
         Post newPost = new Post();
         newPost.setContent(text);
         if (file != null && !file.isEmpty()) {
-            Long fileId = fileStorageService.save(file);
+            Long fileId = pictureService.save(file);
             newPost.setImageLocation(String.valueOf(fileId));
         }
         newPost.setMember(member);
         return postRepository.save(newPost);
-    }
-
-    @Override
-    public Page<Post> searchWithPagination(String query, Pageable pageable) {
-        return postRepository.findAllByContentContaining(query, pageable);
     }
 
     @Override
@@ -124,7 +117,7 @@ public class PostServiceImpl implements PostService {
     public void deleteById(Long postId) {
         Post post = findPostOrThrow(postId);
         if (post.getImageLocation() != null) {
-            fileStorageService.deletePicture(Long.parseLong(post.getImageLocation()));
+            pictureService.deletePicture(Long.parseLong(post.getImageLocation()));
         }
         post.getMember().getPosts().remove(post);
         List<Member> likedMembers = new ArrayList<>(post.getLikedMembers());

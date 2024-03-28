@@ -6,17 +6,14 @@ import dev.mehdi.connectly.dto.member.ProfileDto;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
 import dev.mehdi.connectly.model.Member;
-import dev.mehdi.connectly.service.FileStorageService;
+import dev.mehdi.connectly.service.PictureService;
 import dev.mehdi.connectly.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/members")
@@ -24,7 +21,7 @@ import java.util.Optional;
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
-    private final FileStorageService fileStorageService;
+    private final PictureService pictureService;
 
     @GetMapping
     public ResponseEntity<List<MemberResponseDto>> getMembers() {
@@ -137,7 +134,7 @@ public class MemberController {
 //
 //    @GetMapping("/picture/{filename:.+}")
 //    public ResponseEntity<Resource> getProfilePicture(@PathVariable String filename) {
-//        Resource file = fileStorageService.load(filename);
+//        Resource file = pictureService.load(filename);
 //        return ResponseEntity.ok()
 //                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
 //                .body(file);

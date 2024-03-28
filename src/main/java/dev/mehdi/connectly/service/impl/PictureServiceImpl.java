@@ -2,7 +2,7 @@ package dev.mehdi.connectly.service.impl;
 
 import dev.mehdi.connectly.model.Picture;
 import dev.mehdi.connectly.repository.PictureRepository;
-import dev.mehdi.connectly.service.FileStorageService;
+import dev.mehdi.connectly.service.PictureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
-public class FileStorageServiceImpl implements FileStorageService {
+public class PictureServiceImpl implements PictureService {
     private final Path rootLocation = Paths.get("upload-dir");
     private final PictureRepository pictureRepository;
 

@@ -15,7 +15,7 @@ import dev.mehdi.connectly.repository.MemberRepository;
 import dev.mehdi.connectly.service.EventService;
 import dev.mehdi.connectly.service.MemberService;
 import dev.mehdi.connectly.service.RoleService;
-import dev.mehdi.connectly.service.FileStorageService;
+import dev.mehdi.connectly.service.PictureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +30,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final RoleService roleService;
-    private final FileStorageService fileStorageService;
+    private final PictureService pictureService;
     private final EventService eventService;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final MemberMapper memberMapper;
@@ -186,7 +186,7 @@ public class MemberServiceImpl implements MemberService {
     public Member updateProfilePicture(Long id, MultipartFile file) {
         Member member = findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
-        Long pictureId = fileStorageService.save(file);
+        Long pictureId = pictureService.save(file);
         member.setProfilePictureLocation(String.valueOf(pictureId));
         return save(member);
     }
@@ -214,7 +214,7 @@ public class MemberServiceImpl implements MemberService {
 //        Member member = memberRepository.findById(id)
 //                .orElseThrow(() -> new RuntimeException("Member not found"));
 //
-//        String url = fileStorageService.store(file);
+//        String url = pictureService.store(file);
 //        member.setProfilePictureLocation(url);
 //        memberRepository.save(member);
 //
@@ -226,7 +226,7 @@ public class MemberServiceImpl implements MemberService {
 //        Member member = memberRepository.findById(id)
 //                .orElseThrow(() -> new RuntimeException("Member not found"));
 //
-//        String url = fileStorageService.store(file);
+//        String url = pictureService.store(file);
 //        member.setCoverPictureLocation(url);
 //        memberRepository.save(member);
 //

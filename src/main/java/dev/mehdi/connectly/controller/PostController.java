@@ -92,19 +92,4 @@ public class PostController {
         postService.deleteById(postId);
         return ResponseEntity.ok(true);
     }
-
-//    @GetMapping("/search")
-//    public ResponseEntity<Page<PostResponseDto>> searchWithPagination(
-//            @RequestParam(required = false, defaultValue = "") String query,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "id,desc") String sort
-//    ) {
-//        Sort.Direction direction = sort.endsWith("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-//        String sortField = sort.split(",")[0];
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-//        Page<PostResponseDto> posts = postService.searchWithPagination(query, pageable)
-//                .map(postMapper::toDto);
-//        return ResponseEntity.ok(posts);
-//    }
 }
