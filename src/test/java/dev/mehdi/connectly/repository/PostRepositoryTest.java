@@ -75,10 +75,7 @@ class PostRepositoryTest {
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(posts).isNotEmpty();
         assertions.assertThat(posts).hasSize(2);
-//        assertions.assertThat(posts).contains(post1);
-//        assertions.assertThat(posts).contains(post3);
         assertions.assertThat(posts).contains(post3, post1);
-//        assertions.assertThat(posts).containsExactly(post3, post1);
         assertions.assertThat(posts).doesNotContain(post2, post4, post5, post6);
         assertions.assertAll();
     }
@@ -105,7 +102,6 @@ class PostRepositoryTest {
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(posts).isNotEmpty();
         assertions.assertThat(posts).hasSize(4);
-//        assertions.assertThat(posts).containsExactly(post6, post5, post4, post2);
         assertions.assertThat(posts).contains(post6, post5, post4, post2);
         assertions.assertThat(posts).doesNotContain(post1, post3);
         assertions.assertAll();
@@ -117,7 +113,6 @@ class PostRepositoryTest {
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(posts).isNotEmpty();
         assertions.assertThat(posts).hasSize(2);
-//        assertions.assertThat(posts).containsExactly(post3, post1);
         assertions.assertThat(posts).contains(post3, post1);
         assertions.assertThat(posts).doesNotContain(post2, post4, post5, post6);
         assertions.assertAll();
