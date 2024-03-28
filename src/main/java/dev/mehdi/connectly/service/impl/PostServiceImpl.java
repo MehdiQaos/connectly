@@ -50,14 +50,6 @@ public class PostServiceImpl implements PostService {
         return member.getFollowings().stream()
                 .flatMap(following -> following.getPosts().stream())
                 .toList();
-//        return member.getFollowings().stream()
-//                .flatMap(following -> following.getPosts().stream())
-//                .map(post -> {
-//                    PostResponseDto dto = postMapper.toDto(post);
-//                    dto.setLiked(post.getLikedMembers().contains(member));
-//                    return dto;
-//                })
-//                .toList();
     }
 
     @Override
@@ -79,7 +71,6 @@ public class PostServiceImpl implements PostService {
         Event newEvent = new Event(null, EventType.LIKE, post, null, member, post.getMember());
         post.getMember().addEvent(newEvent);
         memberRepository.save(member);
-//        postRepository.save(post);
     }
 
     @Override

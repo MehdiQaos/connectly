@@ -107,8 +107,6 @@ public class MemberServiceImpl implements MemberService {
         Event newEvent = new Event(null, EventType.FOLLOW, null, null, follow.follower, follow.following);
         follow.following.addEvent(newEvent);
         memberRepository.save(follow.follower);
-//        memberRepository.save(follow.following);
-//        eventService.save(newEvent);
     }
 
     @Override
@@ -124,7 +122,6 @@ public class MemberServiceImpl implements MemberService {
         });
         System.out.println("size: " + follow.following.getNewEvents().size());
         memberRepository.save(follow.follower);
-//        memberRepository.save(follow.following);
     }
 
     @Override

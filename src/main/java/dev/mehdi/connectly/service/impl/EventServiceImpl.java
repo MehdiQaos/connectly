@@ -45,11 +45,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getMemberEvents(Long memberId) {
-        return null;
-    }
-
-    @Override
     public void deleteById(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ResourceNotFoundException("Event not found")
