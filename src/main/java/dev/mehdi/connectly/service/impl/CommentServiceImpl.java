@@ -57,4 +57,12 @@ public class CommentServiceImpl implements CommentService {
         eventService.findByComment(comment).ifPresent(eventService::delete);
         commentRepository.delete(comment);
     }
+
+    @Override
+    public boolean isOwner(Long memberId, Long postId) {
+        return commentRepository.findById(postId)
+                .map(Comment::getMember)
+                .map(Member::getId).map(id -> id.equals(memberId))
+                .orElse(false);
+    }
 }

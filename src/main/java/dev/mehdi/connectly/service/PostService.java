@@ -30,4 +30,6 @@ public interface PostService {
     List<Post> getTimeline(Long memberId);
 
     List<Post> getSuggestions(Long memberId);
+
+    boolean isOwner(Long memberId, Long postId);
 }

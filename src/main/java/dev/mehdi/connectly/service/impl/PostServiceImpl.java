@@ -63,13 +63,12 @@ public class PostServiceImpl implements PostService {
         Post post = findPostOrThrow(postId);
         member.addLikedPost(post);
         if (
-                eventService.findLikeEvent(member, post).isPresent() ||
-                        member.equals(post.getMember())
+                eventService.findLikeEvent(member, post).isEmpty() &&
+                        !member.equals(post.getMember())
         ) {
-            return;
+            Event newEvent = new Event(null, EventType.LIKE, post, null, member, post.getMember());
+            post.getMember().addEvent(newEvent);
         }
-        Event newEvent = new Event(null, EventType.LIKE, post, null, member, post.getMember());
-        post.getMember().addEvent(newEvent);
         memberRepository.save(member);
     }
 
@@ -77,11 +76,8 @@ public class PostServiceImpl implements PostService {
     public void unlikePost(Long memberId, Long postId) {
         Member member = findMemberOrThrow(memberId);
         Post post = findPostOrThrow(postId);
-        eventService.findLikeEvent(member, post).ifPresentOrElse(
-                event -> post.getMember().removeEvent(event),
-                () -> {
-                }
-        );
+        eventService.findLikeEvent(member, post)
+                .ifPresent(event -> post.getMember().removeEvent(event));
         member.removeLikedPost(post);
         postRepository.save(post);
     }
@@ -111,6 +107,7 @@ public class PostServiceImpl implements PostService {
             pictureService.deletePicture(Long.parseLong(post.getImageLocation()));
         }
         post.getMember().getPosts().remove(post);
+        eventService.findByPostId(postId).forEach(eventService::delete);
         List<Member> likedMembers = new ArrayList<>(post.getLikedMembers());
         for (Member member : likedMembers) {
             member.removeLikedPost(post);
@@ -142,6 +139,13 @@ public class PostServiceImpl implements PostService {
         List<Member> followings = new ArrayList<>(member.getFollowings());
         followings.add(member);
         return postRepository.findByMemberNotInOrderByCreatedAtDesc(followings);
+    }
+
+    @Override
+    public boolean isOwner(Long memberId, Long postId) {
+        Member member = findMemberOrThrow(memberId);
+        Post post = findPostOrThrow(postId);
+        return member.equals(post.getMember());
     }
 
     private Member findMemberOrThrow(Long memberId) {

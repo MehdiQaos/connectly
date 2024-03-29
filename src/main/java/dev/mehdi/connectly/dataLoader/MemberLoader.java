@@ -28,8 +28,11 @@ public class MemberLoader implements CommandLineRunner {
             new MemberRequestDto("Oussama", "Jamradi", "oussama@greenzor.com", "123456", LocalDate.of(1991, 12, 20))
     );
 
+    private final MemberRequestDto admin = new MemberRequestDto("Mo", "Ibrahim", "mo@g.com", "123456", LocalDate.of(2003, 1, 24));
+
     @Override
     public void run(String... args) throws Exception {
         memberService.load(memberRequestDtos);
+        memberService.createAdmin(admin);
     }
 }

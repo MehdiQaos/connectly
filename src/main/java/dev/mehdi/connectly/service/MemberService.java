@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface MemberService {
     void load(List<MemberRequestDto> memberRequestDtos);
 
+    void createAdmin(MemberRequestDto memberRequestDto);
+
     List<Member> getMembers();
 
     Optional<Member> findById(Long id);

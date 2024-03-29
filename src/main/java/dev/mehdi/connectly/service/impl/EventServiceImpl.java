@@ -45,11 +45,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<Event> findByPostId(Long postId) {
+        return eventRepository.findAllByPostId(postId);
+    }
+
+    @Override
     public void deleteById(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ResourceNotFoundException("Event not found")
         );
         event.getAffectedMember().removeEvent(event);
         eventRepository.delete(event);
+    }
+
+    public boolean isOwner(Long memberId, Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new ResourceNotFoundException("Event not found")
+        );
+        return event.getAffectedMember().getId().equals(memberId);
     }
 }

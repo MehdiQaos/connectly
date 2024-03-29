@@ -19,5 +19,7 @@ public interface EventService {
 
     Optional<Event> findLikeEvent(Member member, Post post);
 
+    List<Event> findByPostId(Long postId);
+
     void deleteById(Long eventId);
 }

@@ -14,4 +14,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByCommentId(Long commentId);
 
     Optional<Event> findByInitiatingMemberAndPost(Member member, Post post);
+
+    void deleteByPost(Post post);
+
+    List<Event> findAllByPostId(Long postId);
 }

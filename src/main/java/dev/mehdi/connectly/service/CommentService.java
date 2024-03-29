@@ -11,4 +11,6 @@ public interface CommentService {
     List<Comment> findCommentsByPostId(Long postId);
 
     void deleteComment(Long commentId);
+
+    boolean isOwner(Long memberId, Long postId);
 }

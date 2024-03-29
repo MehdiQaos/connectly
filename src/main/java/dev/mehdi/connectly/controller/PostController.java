@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,16 +69,19 @@ public class PostController {
     }
 
     @PostMapping("/{memberId}/like/{postId}")
+    @PreAuthorize("#memberId == authentication.principal.id")
     public void likePost(@PathVariable Long memberId, @PathVariable Long postId) {
         postService.likePost(memberId, postId);
     }
 
     @PostMapping("/{memberId}/unlike/{postId}")
+    @PreAuthorize("#memberId == authentication.principal.id")
     public void unlikePost(@PathVariable Long memberId, @PathVariable Long postId) {
         postService.unlikePost(memberId, postId);
     }
 
     @PostMapping("/{memberId}")
+    @PreAuthorize("#memberId == authentication.principal.id")
     public ResponseEntity<PostResponseDto> createPost(
             @PathVariable Long memberId,
             @RequestParam("content") String text,
@@ -88,6 +92,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
+    @PreAuthorize("hasRole('ADMIN') or @postServiceImpl.isOwner(authentication.principal.id, #postId)")
     public ResponseEntity<Boolean> deletePost(@PathVariable Long postId) {
         postService.deleteById(postId);
         return ResponseEntity.ok(true);

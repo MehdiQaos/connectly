@@ -9,6 +9,7 @@ import dev.mehdi.connectly.service.EventService;
 import dev.mehdi.connectly.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @GetMapping("/member/{memberId}")
+    @PreAuthorize("#memberId == authentication.principal.id")
     public ResponseEntity<List<EventResponseDto>> getMemberEvents(@PathVariable Long memberId) {
         List<EventResponseDto> eventsDto = memberService.findById(memberId)
                 .map(Member::getNewEvents)
@@ -33,6 +35,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{eventId}")
+    @PreAuthorize("@eventServiceImpl.isOwner(authentication.principal.id, #eventId)")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) {
         eventService.deleteById(eventId);
         return ResponseEntity.ok().build();

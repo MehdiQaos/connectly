@@ -8,6 +8,7 @@ import dev.mehdi.connectly.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @PostMapping
+    @PreAuthorize("#commentRequestDto.memberId == authentication.principal.id")
     public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto commentRequestDto) {
         Comment newComment = commentService.createComment(commentRequestDto);
         CommentResponseDto dto = commentMapper.toCommentResponseDto(newComment);
@@ -35,6 +37,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("hasRole('ADMIN') or @commentServiceImpl.isOwner(authentication.principal.id, #commentId)")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();

@@ -6,10 +6,10 @@ import dev.mehdi.connectly.dto.member.ProfileDto;
 import dev.mehdi.connectly.exception.ResourceNotFoundException;
 import dev.mehdi.connectly.mapper.MemberMapper;
 import dev.mehdi.connectly.model.Member;
-import dev.mehdi.connectly.service.PictureService;
 import dev.mehdi.connectly.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +21,9 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
-    private final PictureService pictureService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<MemberResponseDto>> getMembers() {
         List<MemberResponseDto> dtoList = memberService.getMembers()
                 .stream().map(memberMapper::toDto).toList();
@@ -39,11 +39,13 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
+    @PreAuthorize("#followerId == authentication.principal.id")
     @GetMapping("/{followerId}/follow/{followedId}")
     public void follow(@PathVariable Long followerId, @PathVariable Long followedId) {
         memberService.follow(followerId, followedId);
     }
 
+    @PreAuthorize("#followerId == authentication.principal.id")
     @GetMapping("/{followerId}/unfollow/{followedId}")
     public void unfollow(@PathVariable Long followerId, @PathVariable Long followedId) {
         memberService.unfollow(followerId, followedId);
@@ -87,6 +89,7 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long id, @RequestBody EditProfileDto dto) {
         Member updatedMember = memberService.update(id, dto);
         MemberResponseDto responseDto = memberMapper.toDto(updatedMember);
@@ -94,6 +97,7 @@ public class MemberController {
     }
 
     @PatchMapping("/{id}/email")
+    @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> updateEmail(@PathVariable Long id, @RequestParam String email) {
         Member updatedMember = memberService.updateEmail(id, email);
         MemberResponseDto responseDto = memberMapper.toDto(updatedMember);
@@ -101,6 +105,7 @@ public class MemberController {
     }
 
     @PatchMapping("/{id}/password")
+    @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> updatePassword(@RequestParam String oldPassword, @RequestParam String newPassword, @PathVariable Long id) {
         Member updatedMember = memberService.updatePassword(oldPassword, newPassword, id);
         MemberResponseDto responseDto = memberMapper.toDto(updatedMember);
@@ -108,6 +113,7 @@ public class MemberController {
     }
 
     @PostMapping("/{id}/picture")
+    @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<MemberResponseDto> uploadProfilePicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         Member member = memberService.updateProfilePicture(id, file);
         return ResponseEntity.ok(memberMapper.toDto(member));
@@ -119,24 +125,4 @@ public class MemberController {
                 .stream().map(memberMapper::toProfileDto).toList();
         return ResponseEntity.ok(dtoList);
     }
-
-//    @PostMapping("/{id}/profile-picture")
-//    public ResponseEntity<String> uploadProfilePicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-//        String url = memberService.storeProfilePicture(id, file);
-//        return ResponseEntity.ok(url);
-//    }
-//
-//    @PostMapping("/{id}/cover-picture")
-//    public ResponseEntity<String> uploadCoverPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-//        String url = memberService.storeCoverPicture(id, file);
-//        return ResponseEntity.ok(url);
-//    }
-//
-//    @GetMapping("/picture/{filename:.+}")
-//    public ResponseEntity<Resource> getProfilePicture(@PathVariable String filename) {
-//        Resource file = pictureService.load(filename);
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-//                .body(file);
-//    }
 }

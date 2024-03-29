@@ -46,6 +46,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public void createAdmin(MemberRequestDto memberRequestDto) {
+        Member member = memberMapper.requestToMember(memberRequestDto);
+        if (alreadyExist(memberRequestDto)) {
+            return;
+        }
+        Role adminRole = roleService.findByName(MemberRole.ADMIN).orElseThrow(
+                () -> new ResourceNotFoundException("Role not found")
+        );
+        member.setRole(adminRole);
+        String hashedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(hashedPassword);
+        member.setEnabled(true);
+        memberRepository.save(member);
+    }
+
+    @Override
     public List<Member> getMembers() {
         return memberRepository.findAll();
     }
