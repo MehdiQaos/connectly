@@ -30,6 +30,4 @@ public interface MemberMapper {
     @Mapping(target = "numberOfLikes", expression = "java(member.getLikedPosts().size())")
     @Mapping(target = "numberOfComments", expression = "java(member.getComments().size())")
     ProfileDto toProfileDto(Member member);
-
-//    Member editProfileToMember(ProfileDto profileDto, Member member);
 }
