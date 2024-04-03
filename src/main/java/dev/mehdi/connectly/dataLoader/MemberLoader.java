@@ -2,18 +2,14 @@ package dev.mehdi.connectly.dataLoader;
 
 import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.dto.member.MemberRequestDto;
-import dev.mehdi.connectly.dto.post.PostRequestDto;
 import dev.mehdi.connectly.service.MemberService;
-import dev.mehdi.connectly.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Component

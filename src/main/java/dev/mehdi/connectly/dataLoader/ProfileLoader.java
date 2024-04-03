@@ -59,13 +59,11 @@ public class ProfileLoader implements CommandLineRunner {
         if (!dataProperties.getInit())
             return;
         Random random = new Random();
-        memberService.getMembers().forEach(member -> {
-            memberService.setInfos(
-                    member,
-                    bios[random.nextInt(bios.length)],
-                    locations[random.nextInt(locations.length)],
-                    professions[random.nextInt(professions.length)]
-            );
-        });
+        memberService.getMembers().forEach(member -> memberService.setInfos(
+                member,
+                bios[random.nextInt(bios.length)],
+                locations[random.nextInt(locations.length)],
+                professions[random.nextInt(professions.length)]
+        ));
     }
 }
