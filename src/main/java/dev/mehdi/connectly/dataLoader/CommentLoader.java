@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.dataLoader;
 
+import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.dto.comment.CommentRequestDto;
 import dev.mehdi.connectly.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Random;
 @Order(5)
 public class CommentLoader implements CommandLineRunner {
     private final CommentService commentService;
+    private final DataProperties dataProperties;
 
     private final String[] postComments = {
             "Love this!",
@@ -51,6 +53,8 @@ public class CommentLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (!dataProperties.getInit())
+            return;
         Random random = new Random();
         Arrays.stream(postComments).forEach(comment -> {
             long memberId = random.nextLong(1, MemberLoader.numberOfMembers + 1);

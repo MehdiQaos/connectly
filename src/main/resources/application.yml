@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 40MB
+      max-request-size: 50MB
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  profiles:
+    active: mysql
+
+application:
+  security:
+    jwt:
+      expiration: 86400000
+      secret-key: 0ddf5597e02d981f8803c4cc11f015a4e52679d706edb29b595d9e466def5bcf95273a3053ab5d97ee893c23e4023b912daefaade316406a33b7685d4d223dfa
+      refresh-expiration: 604800000

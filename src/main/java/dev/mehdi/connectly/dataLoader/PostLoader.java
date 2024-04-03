@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.dataLoader;
 
+import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.dto.post.PostRequestDto;
 import dev.mehdi.connectly.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Random;
 public class PostLoader implements CommandLineRunner {
     private final Random random = new Random();
     private final PostService postService;
+    private final DataProperties dataProperties;
     final static int numberOfPosts = 20;
 
     private final String[] postsContent = {
@@ -43,6 +45,8 @@ public class PostLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (!dataProperties.getInit())
+            return;
         Arrays.stream(postsContent).forEach(content -> {
             long randomIndex = random.nextLong(1, 4);
             PostRequestDto postRequestDto = new PostRequestDto(content, randomIndex);

@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.dataLoader;
 
+import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +14,7 @@ import java.util.Random;
 @Order(7)
 public class ProfileLoader implements CommandLineRunner {
     private final MemberService memberService;
+    private final DataProperties dataProperties;
 
     private final String[] bios = {
             "I'm a passionate software engineer with over a decade of experience in developing web applications. My journey in coding began when I was just a teenager tinkering with BASIC on my first computer. Since then, I've honed my skills in various programming languages and frameworks, specializing in full-stack development. I thrive in dynamic environments where I can collaborate with talented teams to tackle complex problems and deliver high-quality solutions. Outside of coding, I enjoy hiking, playing guitar, and experimenting with new recipes in the kitchen.",
@@ -54,6 +56,8 @@ public class ProfileLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (!dataProperties.getInit())
+            return;
         Random random = new Random();
         memberService.getMembers().forEach(member -> {
             memberService.setInfos(

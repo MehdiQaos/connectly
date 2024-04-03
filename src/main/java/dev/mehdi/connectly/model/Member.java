@@ -45,7 +45,7 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "profile_picture_location")
     private String profilePictureLocation;
 
-    @Column(name = "bio", columnDefinition = "LONGTEXT")
+    @Column(name = "bio", columnDefinition = "MEDIUMTEXT")
     private String bio;
 
     @Column(name = "location")
@@ -66,7 +66,6 @@ public class Member extends BaseEntity implements UserDetails {
     )
     private final Set<Member> followings = new LinkedHashSet<>();
 
-    //    @ManyToMany(mappedBy = "followings")
     @ManyToMany
     @JoinTable(
             name = "follow",
@@ -103,12 +102,10 @@ public class Member extends BaseEntity implements UserDetails {
 
     public void follow(Member member) {
         followings.add(member);
-//        member.followers.add(this);
     }
 
     public void unfollow(Member member) {
         followings.remove(member);
-//        member.followers.remove(this);
     }
 
     @OneToMany(

@@ -14,7 +14,7 @@ public class Report extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "report_reason", nullable = false, columnDefinition = "MEDIUMTEXT")
+    @Column(name = "report_reason", nullable = false, columnDefinition = "TEXT")
     private String reportReason;
 
     @ManyToOne(optional = false)

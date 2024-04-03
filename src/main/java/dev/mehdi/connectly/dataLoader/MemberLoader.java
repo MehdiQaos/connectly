@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.dataLoader;
 
+import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.dto.member.MemberRequestDto;
 import dev.mehdi.connectly.dto.post.PostRequestDto;
 import dev.mehdi.connectly.service.MemberService;
@@ -19,6 +20,7 @@ import java.util.Random;
 @Order(2)
 public class MemberLoader implements CommandLineRunner {
     private final MemberService memberService;
+    private final DataProperties dataProperties;
     final static int numberOfMembers = 4;
 
     private final List<MemberRequestDto> memberRequestDtos = List.of(
@@ -32,6 +34,8 @@ public class MemberLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (!dataProperties.getInit())
+            return;
         memberService.load(memberRequestDtos);
         memberService.createAdmin(admin);
     }

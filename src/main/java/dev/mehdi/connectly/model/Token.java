@@ -17,11 +17,17 @@ public class Token extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     private TokenType type;
+
+    @Column(name = "token", nullable = false)
     private String token;
+
+    @Column(name = "is_valid", nullable = false)
     private Boolean isValid;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Override

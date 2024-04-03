@@ -1,5 +1,6 @@
 package dev.mehdi.connectly.dataLoader;
 
+import dev.mehdi.connectly.config.DataProperties;
 import dev.mehdi.connectly.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -16,22 +17,12 @@ import java.util.stream.LongStream;
 @Order(6)
 public class LikeLoader implements ApplicationRunner {
     private final PostService postService;
-
-//    @Override
-//    public void run(String... args) {
-//        LongStream.rangeClosed(1, MemberLoader.numberOfMembers).forEach(memberId -> {
-//            LongStream.rangeClosed(1, PostLoader.numberOfPosts).forEach(postId -> {
-//                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-//                if (random.nextBoolean()) {
-//                    System.out.println("Liking post " + postId + " by member " + memberId);
-//                    postService.likePost(memberId, postId);
-//                }
-//            });
-//        });
-//    }
+    private final DataProperties dataProperties;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        if (!dataProperties.getInit())
+            return;
         postService.likePost(1L, 1L);
         Random random = new Random();
         for (int i = 1; i < 40; i++) {

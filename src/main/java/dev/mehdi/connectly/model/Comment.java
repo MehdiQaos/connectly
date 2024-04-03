@@ -19,7 +19,7 @@ public class Comment extends BaseEntity {
     private Long id;
 
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(optional = false)
